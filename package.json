@@ -1,0 +1,31 @@
+{
+  "name": "amazon-drive",
+  "version": "1.0.0",
+  "description": "Amazon Drive API client",
+  "main": "drive.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/williamkapke/amazon-drive.git"
+  },
+  "keywords": [
+    "Amazon",
+    "Drive",
+    "Cloud",
+    "API"
+  ],
+  "author": "William Kapke",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/williamkapke/amazon-drive/issues"
+  },
+  "homepage": "https://github.com/williamkapke/amazon-drive#readme",
+  "dependencies": {
+    "eachline": "^3.0.5",
+    "extend": "^3.0.1",
+    "form-data": "^2.1.4",
+    "get-then": "^1.1.1"
+  }
+}
