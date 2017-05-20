@@ -26,6 +26,6 @@
     "eachline": "^3.0.5",
     "extend": "^3.0.1",
     "form-data": "^2.1.4",
-    "get-then": "^1.1.1"
+    "get-then": "^1.2.0"
   }
 }

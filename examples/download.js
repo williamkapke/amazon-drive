@@ -8,9 +8,9 @@ function log (data) {
   console.log(JSON.parse(data))
 }
 
-drive.nodes.download('juuQyp8CSum1lLqTSMj7gg')
+drive.nodes.download('2VnnFApJQOiou5cIv82PNw')
 .then((stream) => {
-  //
+  stream.pipe(process.stdout)
 })
 .catch((e) => {
   console.log(e.statusCode, e.statusMessage)
