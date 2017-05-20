@@ -1,6 +1,6 @@
 {
   "name": "amazon-drive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Amazon Drive API client",
   "main": "drive.js",
   "scripts": {
