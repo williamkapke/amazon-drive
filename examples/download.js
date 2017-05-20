@@ -4,10 +4,6 @@ const drive = require('../drive.js')({
   access_token: auth.access_token
 })
 
-function log (data) {
-  console.log(JSON.parse(data))
-}
-
 drive.nodes.download('2VnnFApJQOiou5cIv82PNw')
 .then((stream) => {
   stream.pipe(process.stdout)
