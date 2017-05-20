@@ -6,19 +6,15 @@ const drive = require('../drive.js')({
   access_token: auth.access_token
 })
 
-function log (data) {
-  console.log(JSON.parse(data))
-}
-
-drive.account.endpoint().then(log)
+drive.account.endpoint().then(console.log)
 .then(() =>
-  drive.account.info().then(log)
+  drive.account.info().then(console.log)
 )
 .then(() =>
-  drive.account.quota().then(log)
+  drive.account.quota().then(console.log)
 )
 .then(() =>
-  drive.account.usage().then(log)
+  drive.account.usage().then(console.log)
 )
 .catch((e) => {
   console.log(e.statusCode, e.statusMessage)

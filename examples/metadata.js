@@ -6,16 +6,14 @@ const drive = require('../drive.js')({
   access_token: auth.access_token
 })
 
-function log (data) {
-  console.log(JSON.parse(data))
-}
+const log = (data) => console.log(data) || data
 
 drive.nodes.list({ limit: 2, filters: 'kind:FILE AND name:Pictures.*' }).then(log)
-.then(() => {
-  drive.nodes.get('-pTvp3NERJqBTY5jfCm2BQ').then(log)
+.then((results) => {
+  drive.nodes.get(results.data[0].id).then(console.log)
 })
 .catch((e) => {
-  console.log(e.statusCode, e.statusMessage)
-  console.log(e.headers)
-  console.log(String(e))
+  console.error(e.statusCode, e.statusMessage)
+  console.error(e.headers)
+  console.error(String(e))
 })

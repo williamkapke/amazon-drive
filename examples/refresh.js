@@ -19,7 +19,6 @@ const drive = require('../drive.js')({
 })
 
 drive.account.info()
-.then(JSON.parse)
 .then(console.log)
 .catch(e => {
   if (e.statusCode) {

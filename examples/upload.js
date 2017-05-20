@@ -6,7 +6,6 @@ const drive = require('../drive.js')({
 })
 
 drive.nodes.upload(path.resolve(__dirname, '../drive.js'))
-.then(JSON.parse)
 .then(console.log)
 .catch((e) => {
   console.log(e.statusCode, e.statusMessage)

@@ -18,7 +18,6 @@ module.exports = (config) => {
     config.cache()
     .then((urls) => urls ||
       drive.account.endpoint()
-      .then(JSON.parse)
       .then(config.cache)
     )
   const req = require('./lib/req.js')(config, urls)
@@ -28,7 +27,7 @@ module.exports = (config) => {
     changes: require('./lib/changes.js')(config, urls),
     urls,
     account: {
-      endpoint: () => req('https://drive.amazonaws.com/drive/v1/account/endpoint'),
+      endpoint: () => req('https://drive.amazonaws.com/drive/v1/account/endpoint').then(JSON.parse),
       info: () => req.metadata('account/info'),
       quota: () => req.metadata('account/quota'),
       usage: () => req.metadata('account/usage')
