@@ -5,7 +5,7 @@ const fs = require('fs')
 const dir = __dirname
 
 const drive = require('../drive.js')({
-  cache: () => Promise.resolve(urls),
+  cacheUrls: () => Promise.resolve(urls),
   refresh: () =>
     req('https://data-mind-687.appspot.com/clouddrive?refresh_token=' + auth.refresh_token, { 'Content-Type': 'application/json' })
     .then(JSON.parse)

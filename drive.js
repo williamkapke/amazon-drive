@@ -15,15 +15,15 @@ function qs (obj) {
 }
 
 module.exports = (config) => {
-  if (typeof config.cache !== 'function') config.cache = cache
+  if (typeof config.cacheUrls !== 'function') config.cacheUrls = cache
 
   // They ask that the urls are cached. This provides a single
   // point for `GET`ing them or pulling from a user defined cache
   const getUrls = () =>
-    config.cache()
+    config.cacheUrls()
     .then((urls) => urls ||
       drive.account.endpoint()
-      .then(config.cache)
+      .then(config.cacheUrls)
     )
   const req = require('./req.js')(config, getUrls)
   const drive = {
