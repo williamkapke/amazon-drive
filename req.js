@@ -7,7 +7,7 @@ const zlib = require('zlib')
 const FormData = require('form-data')
 const urlParse = require('url').parse
 
-exports = module.exports = (config, urls) => {
+exports = module.exports = (config, getUrls) => {
   function request (url, headers, data, method, retry = 0) {
     const defaults = { authorization: 'Bearer ' + config.access_token, 'content-type': 'application/json' }
 
@@ -24,14 +24,14 @@ exports = module.exports = (config, urls) => {
   }
 
   request.metadata = (path, headers, data, method) =>
-    urls()
+    getUrls()
     .then((urls) =>
       request(urls.metadataUrl + path, headers, data, method)
       .then(JSON.parse)
     )
 
   request.upload = (fullpath, metadata = {}, suppress = false) =>
-    urls()
+    getUrls()
     .then((urls) => {
       suppress = suppress ? 'suppress=true' : ''
       const required = { name: path.basename(fullpath) }
@@ -47,7 +47,7 @@ exports = module.exports = (config, urls) => {
     })
 
   request.overwrite = (id, fullpath) =>
-    urls()
+    getUrls()
     .then((urls) => {
       const form = new FormData()
       form.append('content', fs.createReadStream(fullpath))

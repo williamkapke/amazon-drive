@@ -9,9 +9,7 @@ drive.changes({ maxNodes: 3 }, (data) => {
   console.log('--------')
   console.log(data)
 })
-.then((res) => {
+.then(() => {
   // called when the response has completed
-  console.log(res.statusCode, res.statusMessage)
-  console.log(res.headers)
 })
 .catch(console.error)

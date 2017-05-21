@@ -1,4 +1,6 @@
 const querystring = require('querystring')
+const eachline = require('eachline')
+
 let _cache
 function cache (urls) {
   console.log('cache', !urls ? 'GET' : 'SET', urls || '')
@@ -14,18 +16,32 @@ function qs (obj) {
 
 module.exports = (config) => {
   if (typeof config.cache !== 'function') config.cache = cache
-  const urls = () =>
+
+  // They ask that the urls are cached. This provides a single
+  // point for `GET`ing them or pulling from a user defined cache
+  const getUrls = () =>
     config.cache()
     .then((urls) => urls ||
       drive.account.endpoint()
       .then(config.cache)
     )
-  const req = require('./lib/req.js')(config, urls)
-
+  const req = require('./req.js')(config, getUrls)
   const drive = {
     req,
-    changes: require('./lib/changes.js')(config, urls),
-    urls,
+    changes: (options, onchunk) =>
+      getUrls()
+      .then((urls) =>
+        req.stream(urls.metadataUrl + 'changes', options, 'POST')
+      )
+      .then((stream) => new Promise(function (resolve, reject) {
+        stream
+        .on('close', reject)
+        .on('end', resolve)
+        .pipe(eachline((line) =>
+          onchunk(JSON.parse(line))
+        ))
+      })),
+    getUrls,
     account: {
       endpoint: () => req('https://drive.amazonaws.com/drive/v1/account/endpoint').then(JSON.parse),
       info: () => req.metadata('account/info'),
@@ -42,7 +58,7 @@ module.exports = (config) => {
         return req.upload(fullpath, md, suppress)
       },
       overwrite: (id, fullpath) => req.overwrite(id, fullpath),
-      download: (id) => urls().then((urls) =>
+      download: (id) => getUrls().then((urls) =>
         req.stream(urls.contentUrl + `nodes/${id}/content`)
       ),
       create: (name, metadata = {}) => {
@@ -92,6 +108,27 @@ module.exports = (config) => {
       restore: (id) => req.metadata(`trash/${id}/restore`, null, null, 'POST')
     }
   }
+
+  // API extras...
+  drive.nodes.list.all = (filters, pages = []) =>
+    drive.nodes.list({
+      filters,
+      limit: 200,
+      startToken: (pages.length || undefined) && pages[pages.length - 1].nextToken
+    })
+    .then((page) => {
+      const hasData = page.data && page.data.length
+
+      if (hasData) {
+        pages = pages.concat(page)
+      }
+      if (!hasData || !page.nextToken) {
+        return pages.reduce((prev, curr) => prev.concat(curr.data), [])
+      }
+
+      // get next page
+      return drive.nodes.list.all(filters, pages)
+    })
 
   return drive
 }
