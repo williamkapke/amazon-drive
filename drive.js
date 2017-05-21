@@ -3,7 +3,6 @@ const eachline = require('eachline')
 
 let _cache
 function cache (urls) {
-  console.log('cache', !urls ? 'GET' : 'SET', urls || '')
   return Promise.resolve(urls ? (_cache = urls) : _cache)
 }
 function qs (obj) {

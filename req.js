@@ -58,7 +58,7 @@ exports = module.exports = (config, getUrls) => {
             .then(JSON.parse)
     })
 
-  request.stream = (url, data, method) => {
+  request.stream = (url, data, method, retry = 0) => {
     const options = urlParse(url)
     options.method = method || (data ? 'POST' : 'GET')
     options.headers = {
@@ -69,9 +69,18 @@ exports = module.exports = (config, getUrls) => {
 
     return new Promise(function (resolve, reject) {
       const req = https.request(options, (res) => {
+        // refresh token and retry...?
+        if (res.statusCode === 401 && typeof config.refresh === 'function' && retry === 0) {
+          return resolve(config.refresh()
+            .then(() =>
+              request.stream(url, data, method, ++retry))
+          )
+        }
+
         if (res.statusCode !== 200) {
           return reject(new Error(res.statusCode + ' ' + res.statusMessage))
         }
+
         let gz = res.headers['content-encoding'] === 'gzip'
         resolve(gz ? res.pipe(zlib.createGunzip()) : res)
       })
